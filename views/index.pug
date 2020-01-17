@@ -1,0 +1,115 @@
+doctype html
+head
+  meta( name='viewport', content='width=device-width, initial-scale=1' )
+
+  link(rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/css/bootstrap.min.css')
+  link(rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css')
+
+  script(type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/svg.js/3.0.13/svg.js')
+  script(type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js')
+  script(type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js')
+  script(type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min.js')
+  script(type='text/javascript' src='https://www.verovio.org/javascript/develop/verovio-toolkit.js')
+  
+  style.
+    .container {
+      display: flex;    
+      height: 100vh;
+    }
+
+    .container .col {
+      width: 50%;
+    }
+
+  script.
+    let vrvToolkit = new verovio.toolkit();
+    let points = [];
+    
+    $.ajax({
+      url: 'grieg_1903.svl',
+      dataType: 'text',
+      success: function (data) {
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(data, 'application/xml');
+        $(doc).find('point').each(function() {
+          points.push({
+            frame: parseInt($(this).attr('frame'), 10),
+            corresp: $(this).attr('label')
+          });
+        });
+        
+        let draw = SVG().addTo('#svl_canvas');
+
+        let factor = 7;
+        
+        // duration of semiquavers
+        let diff = [];
+        for (let i=0; i<points.length-1; i++) {
+          diff.push(points[i+1].frame - points[i].frame);
+        }
+        
+        // duration of crotchets
+        let diff2 = [];
+        for (let i=0; i<points.length-4; i+=4) {
+          diff2.push(points[i+4].frame - points[i].frame);
+        }
+
+        let maxDiff = Math.max(...diff2) * factor;
+        let maxFrame = points[points.length-1].frame;
+        let minFrame = points[0].frame;
+        draw.viewbox(minFrame, 0, maxFrame, maxDiff);
+
+        // draw semiquavers
+        for (let i=0; i<points.length-1; i++) {
+          let corresp = points[i].corresp;
+          let verticalDiff = diff[i] * factor;
+
+          draw.rect(diff[i], verticalDiff).
+               move(points[i].frame, maxDiff - verticalDiff).
+               fill('gray').
+               id(corresp.slice(1) + '_instant').
+               on('mouseover', function() {
+                 SVG(corresp).animate().fill('#ffaa99').animate().fill('#000000');
+               });
+        }
+
+        // draw crotchets
+        for (let i=0; i<points.length-4; i+=4) {
+          let verticalDiff = diff2[i/4] * factor;
+
+          draw.rect(diff2[i/4], verticalDiff).
+               move(points[i].frame, maxDiff - verticalDiff).
+               stroke(1).
+               opacity(0.2).
+               back();
+        }
+      }
+    });
+
+    $.ajax({
+      url: 'grieg_butterfly.mei',
+      dataType: "text",
+      success: function (data) {
+        let svg = vrvToolkit.renderData(data, {
+          scale: 20,
+          footer: 'none'
+          });
+        $("#mei_canvas").html(svg);
+        
+        for (let i=0; i<points.length; i++) {
+          let frame = points[i].frame;
+          let corresp = $(points[i].corresp);
+          if (corresp.length != 0) {
+            corresp.on('mouseover', function() {
+              let instantSelector = '#' + $(this).attr('id') + '_instant';
+              let svg = SVG(instantSelector).animate().opacity(0.2).reverse();
+            });
+          }
+        }
+      }
+    });
+
+body
+  .container
+    #mei_canvas.col
+    #svl_canvas.col
