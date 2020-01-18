@@ -40,7 +40,7 @@ head
         
         let draw = SVG().addTo('#svl_canvas');
 
-        let factor = 7;
+        let factor = 8;
         
         // duration of semiquavers
         let diff = [];
@@ -73,7 +73,7 @@ head
                }).
                id(corresp.slice(1) + '_instant').
                on('mouseover', function() {
-                 SVG(corresp).animate().fill('#ffaa99').animate().fill('#000000');
+                 SVG(corresp).animate().opacity(0.1).reverse();
                });
         }
 
