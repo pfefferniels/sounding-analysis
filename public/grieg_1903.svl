@@ -53,24 +53,23 @@
       <point frame="393200" label="#d418069e1171" />
       <point frame="398320" label="#d418069e1191" />
       <point frame="406848" label="#d418069e1386" />
-<!--      <point frame="423520" label="New Point" />
-      <point frame="428160" label="New Point" />
-      <point frame="432400" label="New Point" />
-      <point frame="441280" label="New Point" />
-      <point frame="445360" label="New Point" />
-      <point frame="449200" label="New Point" />
-      <point frame="453360" label="New Point" />
-      <point frame="455520" label="New Point" />
-      <point frame="460240" label="New Point" />
-      <point frame="464720" label="New Point" />
-      <point frame="470400" label="New Point" />
-      <point frame="472160" label="New Point" />
-      <point frame="475200" label="New Point" />
-      <point frame="477120" label="New Point" />
-      <point frame="479760" label="New Point" />
-      <point frame="482640" label="New Point" />
-      <point frame="487200" label="New Point" />
-      <point frame="500480" label="New Point" />
+      <point frame="423520" label="#d418069e1685" />
+      <point frame="428160" label="#d418069e1703" />
+      <point frame="429520" label="#d418069e1725" />
+      <point frame="432880" label="#d418069e1745" />
+      <point frame="438000" label="#d418069e1453" />
+      <point frame="441280" label="#d418069e1453" />
+      <point frame="445360" label="#d418069e1453" />
+      <point frame="449200" label="#d418069e1495" />
+      <point frame="453360" label="#d418069e1537" />
+      <point frame="455520" label="#d418069e1555" />
+      <point frame="460240" label="#d418069e1577" />
+      <point frame="464720" label="#d418069e1597" />
+      <point frame="470400" label="#d418069e1618" />
+      <point frame="475200" label="#d418069e1636" />
+      <point frame="479760" label="#d418069e1656" />
+      <point frame="487200" label="#d418069e1853" />
+      <!--<point frame="500480" label="New Point" />
       <point frame="502560" label="New Point" />
       <point frame="506560" label="New Point" />
       <point frame="519200" label="New Point" />

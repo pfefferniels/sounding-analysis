@@ -66,7 +66,11 @@ head
 
           draw.rect(diff[i], verticalDiff).
                move(points[i].frame, maxDiff - verticalDiff).
-               fill('gray').
+               attr({
+                'fill': 'gray',
+               	'stroke': '#000',
+               	'stroke-width': 100
+               }).
                id(corresp.slice(1) + '_instant').
                on('mouseover', function() {
                  SVG(corresp).animate().fill('#ffaa99').animate().fill('#000000');
@@ -75,13 +79,26 @@ head
 
         // draw crotchets
         for (let i=0; i<points.length-4; i+=4) {
+          let meterPos = (i/4)%4+1;
           let verticalDiff = diff2[i/4] * factor;
 
-          draw.rect(diff2[i/4], verticalDiff).
-               move(points[i].frame, maxDiff - verticalDiff).
-               stroke(1).
-               opacity(0.2).
-               back();
+          let rect = draw.rect(diff2[i/4], verticalDiff).
+                          move(points[i].frame, maxDiff - verticalDiff).
+                          attr({
+                          	'fill-opacity': 0.1,
+                          	'stroke': '#000',
+                          	'stroke-width': 300
+                          }).
+                          back();
+          draw.plain(meterPos).move(rect.cx(), rect.cy()).font({size: 9999});
+          if (meterPos == 4) {
+            let x = points[i].frame + rect.width();
+            console.log("drawing line from", x, ",0 to ", x, maxDiff)
+            var line = draw.line(x, 0, x, maxDiff).attr({
+              'stroke-width': 1000,
+              'stroke': 'black', 
+              'stroke-dasharray': 3000 });
+          }
         }
       }
     });
