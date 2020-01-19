@@ -664,7 +664,7 @@
               </staff>
             </measure>
           </section>
-          <section>
+<!--          <section>
             <measure n="7" xml:id="d418069e2442">
               <staff n="1">
                 <layer n="1">
@@ -2955,7 +2955,7 @@
                 </layer>
               </staff>
             </measure>
-          </section>
+          </section> -->
         </score>
       </mdiv>
     </body>
