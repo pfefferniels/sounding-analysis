@@ -1,11 +1,11 @@
-const frameRate = 44100;
+frameRate = 44100;
 const noteLength = 0.05;    // length of a beep in seconds
 const scheduleAheadTime = 0.5; // How far ahead to schedule audio (sec)
                             // This is calculated from lookahead, and overlaps
                             // with next interval (in case the timer is late)
 const lookahead = 25.0;     // How frequently to call scheduling function (in ms)
 
-let audioContext = null;
+audioContext = null;
 let unlocked = false;
 let isPlaying = false;      // Are we currently playing?
 let currentPoint;           // What note is currently last scheduled?

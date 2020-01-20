@@ -1,5 +1,29 @@
 let vrvToolkit = new verovio.toolkit();
+let audioBuffer;
 points = [];
+
+function playAudioAtFrame(offset, duration) {
+  let source = audioContext.createBufferSource();
+  source.buffer = audioBuffer;
+  source.connect(audioContext.destination);
+  source.start(0, offset/frameRate, duration/frameRate);
+}
+
+let xhr = new XMLHttpRequest();
+xhr.open('GET', 'grieg_1903.ogg', true);
+xhr.responseType = 'arraybuffer';
+
+xhr.onload = function(e) {
+  if (this.status == 200) {
+    audioContext.decodeAudioData(xhr.response, function(buffer) {
+      audioBuffer = buffer;
+    }, function() {
+      console.log('failed decoding audio data');
+    });
+  }
+};
+
+xhr.send();
 
 $.ajax({
   url: 'grieg_1903.svl',
@@ -48,6 +72,7 @@ $.ajax({
       draw.rect(diff[i], verticalDiff).
            move(points[i].frame, maxDiff - verticalDiff).
            attr({
+            'cursor': 'pointer',
             'fill': 'gray',
             'stroke': '#000',
             'stroke-width': 100
@@ -55,6 +80,9 @@ $.ajax({
            id(corresp.slice(1) + '_instant').
            on('mouseover', function() {
              SVG(corresp).opacity(0.1).animate().opacity(1);
+           }).
+           on('click', function() {
+             playAudioAtFrame(points[i].frame, diff[i])
            });
     }
 
@@ -67,6 +95,7 @@ $.ajax({
       let rect = draw.rect(diff2[i/4], verticalDiff).
                       move(points[i].frame, maxDiff - verticalDiff).
                       attr({
+                        'cursor': 'pointer',
                         'fill-opacity': 0.1,
                         'stroke': '#000',
                         'stroke-width': 300
@@ -76,6 +105,9 @@ $.ajax({
                           SVG(points[i+j].corresp).opacity(0.1).animate().opacity(1);
                         }
                       }).
+                      on('click', function() {
+                        playAudioAtFrame(points[i].frame, points[i+4].frame-points[i].frame);
+                      }).
                       back();
       draw.plain(meterPos).move(rect.cx(), rect.cy()).font({size: 9999});
       if (meterPos == 4) {
@@ -84,9 +116,26 @@ $.ajax({
           'stroke-width': 1000,
           'stroke': 'black',
           'stroke-dasharray': 3000 });
-        //draw.plain(barCount).
-        //     move(points[i].frame - 0.5*points[i-15].frame, maxDiff + 0.5*marginBottom).
-        //     font({size: 9999});
+        let y = maxDiff+(marginBottom/2);
+        draw.plain('b. ' + barCount).
+             move(points[i-12].frame + (points[i].frame-points[i-12].frame)/2, y).
+             font({size: 9999});
+        draw.rect(x-points[i-12].frame, 20000).
+             attr({
+              'cursor': 'pointer',
+              'fill': 'gray',
+              'opacity': 0.1,
+              'stroke-width': 1000,
+              'stroke': 'black' }).
+             move(points[i-12].frame, y-14000).
+             on('mouseover', function() {
+               for (j=0; j<16; j++) {
+                 SVG(points[i+(j-12)].corresp).opacity(0.1).animate().opacity(1);
+               }
+             }).
+             on('click', function() {
+               playAudioAtFrame(points[i-12].frame, points[i+4].frame-points[i-12].frame);
+             });
         barCount += 1;
       }
     }
