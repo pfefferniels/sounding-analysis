@@ -31,16 +31,17 @@ function nextNote() {
 
 function scheduleNote(beatNumber, time) {
   // push the note on the queue, even if we're not playing.
-  notesInQueue.push( { note: beatNumber, time: time } );
+  notesInQueue.push({ note: beatNumber, time: time });
 
   // create an oscillator
   var osc = audioContext.createOscillator();
   osc.connect(audioContext.destination);
+
   if (beatNumber % 16 === 0) {
     osc.frequency.value = 880.0; // high pitch on 1st beat in measure
   }
   else if (beatNumber % 4 === 0 ) {
-    osc.frequency.value = 440.0; // medium pitch on the quarter notes
+    osc.frequency.value = 500.0; // medium pitch on the quarter notes
   }
   else {
     osc.frequency.value = 220.0;  // low pitch on 16th notes

@@ -16,7 +16,7 @@ $.ajax({
 
     let draw = SVG().addTo('#svl_canvas');
 
-    let factor = 8;
+    let factor = 5;
     let marginBottom = 40000;
 
     // duration of semiquavers
@@ -98,8 +98,12 @@ $.ajax({
   dataType: "text",
   success: function (data) {
     let svg = vrvToolkit.renderData(data, {
-      scale: 20,
-      footer: 'none'
+      pageWidth: 4000,
+      svgViewBox: 1,
+      scale: 120,
+      footer: 'none',
+      adjustPageHeight: 1,
+      breaks: 'encoded'
       });
     $("#mei_canvas").html(svg);
 
