@@ -44,7 +44,7 @@ function scheduleNote(beatNumber, time) {
     osc.frequency.value = 500.0; // medium pitch on the quarter notes
   }
   else {
-    osc.frequency.value = 220.0;  // low pitch on 16th notes
+    osc.frequency.value = 0.0;  // low pitch on 16th notes
   }
 
   osc.start(time);

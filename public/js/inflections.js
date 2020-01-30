@@ -2,6 +2,10 @@ let vrvToolkit = new verovio.toolkit();
 let audioBuffer;
 points = [];
 
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 function playAudioAtFrame(offset, duration) {
   let source = audioContext.createBufferSource();
   source.buffer = audioBuffer;
@@ -9,6 +13,7 @@ function playAudioAtFrame(offset, duration) {
   source.start(0, offset/frameRate, duration/frameRate);
 }
 
+// load the recording ($.ajax is not usable with 'arraybuffer' as response type)
 let xhr = new XMLHttpRequest();
 xhr.open('GET', 'grieg_1903.ogg', true);
 xhr.responseType = 'arraybuffer';
@@ -25,10 +30,13 @@ xhr.onload = function(e) {
 
 xhr.send();
 
+// load the time instants layer exported from Sonic Visualiser
 $.ajax({
   url: 'grieg_1903.svl',
   dataType: 'text',
-  success: function (data) {
+  success: async function (data) {
+    await sleep(2000);
+
     const parser = new DOMParser();
     const doc = parser.parseFromString(data, 'application/xml');
     $(doc).find('point').each(function() {
@@ -40,8 +48,9 @@ $.ajax({
 
     let draw = SVG().addTo('#svl_canvas');
 
-    let factor = 5;
-    let marginBottom = 40000;
+    let factor = 5; // width and height of every stem are in a fixed ratio
+    let marginBottom = 40000; // height of a margin added below the skyline graphic
+                              // for displaying measure boxes
 
     // duration of semiquavers
     let diff = [];
@@ -87,7 +96,11 @@ $.ajax({
     }
 
     // draw crotchets
+    let measures = SVG.find('.measure');
+    let avgMeasureWidth = (maxFrame/measures.length);
+    let shift = 0;
     let barCount = 1;
+    let prevL = 0;
     for (let i=0; i<points.length-4; i+=4) {
       let meterPos = (i/4)%4+1;
       let verticalDiff = diff2[i/4] * factor;
@@ -110,8 +123,24 @@ $.ajax({
                       }).
                       back();
       draw.plain(meterPos).move(rect.cx(), rect.cy()).font({size: 9999});
+
+      // after every fourth beat, draw vertical line as a bar line
+      // and scale size of that measure in the score according to its
+      // length in the recording.
       if (meterPos == 4) {
         let x = points[i].frame + rect.width();
+        let measureWidth = x - points[i-12].frame;
+        let el = measures[barCount - 1];
+        let scale = measureWidth / avgMeasureWidth;
+        let width = el.bbox().width;
+        let l = (width - scale * width) / 2
+        shift -= prevL + l;
+        el.transform({
+          scale: scale
+        });
+        el.translate(shift, 0);
+        prevL = l;
+
         draw.line(x, 0, x, maxDiff+marginBottom).attr({
           'stroke-width': 1000,
           'stroke': 'black',
@@ -120,7 +149,7 @@ $.ajax({
         draw.plain('b. ' + barCount).
              move(points[i-12].frame + (points[i].frame-points[i-12].frame)/2, y).
              font({size: 9999});
-        draw.rect(x-points[i-12].frame, 20000).
+        draw.rect(measureWidth, 20000).
              attr({
               'cursor': 'pointer',
               'fill': 'gray',
@@ -152,9 +181,14 @@ $.ajax({
       scale: 120,
       footer: 'none',
       adjustPageHeight: 1,
-      breaks: 'encoded'
+      breaks: 'encoded',
+      spacingNonLinear: 1.0
       });
     $("#mei_canvas").html(svg);
+    $('.pgHead').hide();
+    for (let i=0; i<3; i++) {
+      $('.system>path:nth-child(' + (i+1) + ')').hide();
+    }
 
     for (let i=0; i<points.length; i++) {
       let frame = points[i].frame;
