@@ -2,10 +2,6 @@ let vrvToolkit = new verovio.toolkit();
 let audioBuffer;
 points = [];
 
-function sleep(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
-}
-
 function highlight(el) {
   let svg = SVG(el);
   if (svg != null) {
