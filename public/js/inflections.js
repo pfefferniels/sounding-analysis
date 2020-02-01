@@ -176,7 +176,7 @@ $.ajax({
   dataType: "text",
   success: function (data) {
     let svg = vrvToolkit.renderData(data, {
-      pageWidth: 4000,
+      pageWidth: 6000,
       svgViewBox: 1,
       scale: 120,
       footer: 'none',

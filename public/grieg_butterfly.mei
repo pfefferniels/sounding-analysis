@@ -620,7 +620,7 @@
                 </layer>
               </staff>
             </measure>
-            <measure n="6" xml:id="d418069e2160">
+            <measure n="6" xml:id="d418069e2160" right="dbl">
               <staff n="1">
                 <layer n="1">
                   <beam>
@@ -666,7 +666,6 @@
             </measure>
           </section>
           <section>
-            <sb />
             <measure n="1" xml:id="d418069e9-rpt">
               <staff n="1">
                 <layer n="1">
