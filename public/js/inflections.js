@@ -6,6 +6,15 @@ function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
+function highlight(el) {
+  let svg = SVG(el);
+  if (svg != null) {
+    svg.opacity(0.1).animate().opacity(1);
+  } else {
+    console.log('no corresponding element', el);
+  }
+}
+
 function playAudioAtFrame(offset, duration) {
   let source = audioContext.createBufferSource();
   source.buffer = audioBuffer;
@@ -14,21 +23,25 @@ function playAudioAtFrame(offset, duration) {
 }
 
 // load the recording ($.ajax is not usable with 'arraybuffer' as response type)
-let xhr = new XMLHttpRequest();
-xhr.open('GET', 'grieg_1903.ogg', true);
-xhr.responseType = 'arraybuffer';
+function loadRecording() {
+	let xhr = new XMLHttpRequest();
 
-xhr.onload = function(e) {
-  if (this.status == 200) {
-    audioContext.decodeAudioData(xhr.response, function(buffer) {
-      audioBuffer = buffer;
-    }, function() {
-      console.log('failed decoding audio data');
-    });
-  }
+	return new Promise(function (resolve, reject) {
+    xhr.onload = function(e) {
+      if (this.status == 200) {
+        audioContext.decodeAudioData(xhr.response, function(buffer) {
+          audioBuffer = buffer;
+        }, function() {
+          console.log('failed decoding audio data');
+        });
+      }
+    };
+
+    xhr.open('GET', 'grieg_1903.ogg', true);
+    xhr.responseType = 'arraybuffer';
+		xhr.send();
+	});
 };
-
-xhr.send();
 
 // load the time instants layer exported from Sonic Visualiser
 $.ajax({
@@ -88,7 +101,7 @@ $.ajax({
            }).
            id(corresp.slice(1) + '_instant').
            on('mouseover', function() {
-             SVG(corresp).opacity(0.1).animate().opacity(1);
+             highlight(corresp);
            }).
            on('click', function() {
              playAudioAtFrame(points[i].frame, diff[i])
@@ -115,7 +128,7 @@ $.ajax({
                       }).
                       on('mouseover', function() {
                         for (j=0; j<4; j++) {
-                          SVG(points[i+j].corresp).opacity(0.1).animate().opacity(1);
+                          highlight(points[i+j].corresp);
                         }
                       }).
                       on('click', function() {
@@ -159,7 +172,7 @@ $.ajax({
              move(points[i-12].frame, y-14000).
              on('mouseover', function() {
                for (j=0; j<16; j++) {
-                 SVG(points[i+(j-12)].corresp).opacity(0.1).animate().opacity(1);
+                 highlight(points[i+(j-12)].corresp);
                }
              }).
              on('click', function() {
@@ -196,7 +209,7 @@ $.ajax({
       if (corresp.length != 0) {
         corresp.on('mouseover', function() {
           let instantSelector = '#' + $(this).attr('id') + '_instant';
-          let svg = SVG(instantSelector).opacity(0.1).animate().opacity(1);
+          highlight(instantSelector);
         });
       }
     }
