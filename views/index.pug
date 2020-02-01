@@ -35,19 +35,21 @@ head
 
 body
   .container
-    .row
+    .row.mt-4
       small This is a "Skyline" representation (as suggested by Gottschewski) of Griegs 1903 recording of 'Butterfly'.
         |  Click on any bar to hear the corresponding extract from the recording. Hovering on any bar will highlight 
         | the corresponding bit in the score. On the left side, a metronome can 
         | be started, that follows precisely Grieg's tempo inflections. 
       
     #svl_canvas.row
-    .row 
+    .row.mt-4
       small The score of the first section, where width and height of every measure are proportional to the 
         | real duration in the 1903 recording.
     #mei_canvas.row
-    
+  
   #play
     i.play.fas.fa-play
     i.stop.fas.fa-stop
-    
+  
+  .fixed-bottom.text-right
+    | © Niels Pfeffer
