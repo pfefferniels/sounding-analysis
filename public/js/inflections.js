@@ -83,12 +83,7 @@ function renderTimeInstants(data) {
 
     draw.rect(diff[i], verticalDiff).
          move(points[i].frame, maxDiff - verticalDiff).
-         attr({
-          'cursor': 'pointer',
-          'fill': 'gray',
-          'stroke': '#000',
-          'stroke-width': 100
-         }).
+         attr('class', 'bar semiquaver').
          id(corresp.slice(1) + '_instant').
          on('mouseover', function() {
            highlight(corresp);
@@ -110,12 +105,7 @@ function renderTimeInstants(data) {
 
     let rect = draw.rect(diff2[i/4], verticalDiff).
                     move(points[i].frame, maxDiff - verticalDiff).
-                    attr({
-                      'cursor': 'pointer',
-                      'fill-opacity': 0.1,
-                      'stroke': '#000',
-                      'stroke-width': 300
-                    }).
+                    attr('class', 'bar crotchet').
                     on('mouseover', function() {
                       for (j=0; j<4; j++) {
                         highlight(points[i+j].corresp);
@@ -144,21 +134,13 @@ function renderTimeInstants(data) {
       el.translate(shift, 0);
       prevL = l;
 
-      draw.line(x, 0, x, maxDiff+marginBottom).attr({
-        'stroke-width': 1000,
-        'stroke': 'black',
-        'stroke-dasharray': 3000 });
+      draw.line(x, 0, x, maxDiff+marginBottom).attr('class', 'barline');
       let y = maxDiff+(marginBottom/2);
       draw.plain('b. ' + barCount).
            move(points[i-12].frame + (points[i].frame-points[i-12].frame)/2, y).
            font({size: 9999});
       draw.rect(measureWidth, 20000).
-           attr({
-            'cursor': 'pointer',
-            'fill': 'gray',
-            'opacity': 0.1,
-            'stroke-width': 1000,
-            'stroke': 'black' }).
+           attr('class', 'bar measurebox').
            move(points[i-12].frame, y-14000).
            on('mouseover', function() {
              for (j=0; j<16; j++) {
