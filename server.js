@@ -11,6 +11,6 @@ app.get('/', function(req, res) {
   res.render('index');
 });
 
-app.listen(process.env.PORT || 3000, function() {
+app.listen(process.env.PORT || 3002, function() {
   console.log('Listening');
 });

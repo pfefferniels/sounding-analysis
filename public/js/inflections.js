@@ -1,6 +1,4 @@
 let vrvToolkit = new verovio.toolkit();
-let audioBuffer;
-points = [];
 
 function highlight(el) {
   let svg = SVG(el);
@@ -11,11 +9,30 @@ function highlight(el) {
   }
 }
 
-function playAudioAtFrame(offset, duration) {
+function playRecordingAtFrame(offset, duration) {
   let source = audioContext.createBufferSource();
-  source.buffer = audioBuffer;
+  source.buffer = recordingBuffer;
   source.connect(audioContext.destination);
   source.start(0, offset/frameRate, duration/frameRate);
+}
+
+var recordingIsPlaying = false;
+var recordingNode = null;
+function playRecording() {
+  if (recordingNode == null) {
+    recordingNode = audioContext.createBufferSource();
+    recordingNode.connect(audioContext.destination);
+    recordingNode.buffer = recordingBuffer;
+  }
+
+  if (!recordingIsPlaying) {
+    recordingNode.start(0, points[0].frame/frameRate);
+    recordingIsPlaying = true;
+  } else {
+    recordingNode.stop();
+    recordingIsPlaying = false;
+    recordingNode = null;
+  }
 }
 
 // load the recording ($.ajax is not usable with 'arraybuffer' as response type)
@@ -26,7 +43,7 @@ function loadRecording() {
     xhr.onload = function(e) {
       if (this.status == 200) {
         audioContext.decodeAudioData(xhr.response, function(buffer) {
-          audioBuffer = buffer;
+          recordingBuffer = buffer;
         }, function() {
           console.log('failed decoding audio data');
         });
@@ -89,7 +106,7 @@ function renderTimeInstants(data) {
            highlight(corresp);
          }).
          on('click', function() {
-           playAudioAtFrame(points[i].frame, diff[i])
+           playRecordingAtFrame(points[i].frame, diff[i])
          });
   }
 
@@ -112,7 +129,7 @@ function renderTimeInstants(data) {
                       }
                     }).
                     on('click', function() {
-                      playAudioAtFrame(points[i].frame, points[i+4].frame-points[i].frame);
+                      playRecordingAtFrame(points[i].frame, points[i+4].frame-points[i].frame);
                     }).
                     back();
     draw.plain(meterPos).move(rect.cx(), rect.cy()).font({size: 9999});
@@ -148,7 +165,7 @@ function renderTimeInstants(data) {
              }
            }).
            on('click', function() {
-             playAudioAtFrame(points[i-12].frame, points[i+4].frame-points[i-12].frame);
+             playRecordingAtFrame(points[i-12].frame, points[i+4].frame-points[i-12].frame);
            });
       barCount += 1;
     }
@@ -157,9 +174,8 @@ function renderTimeInstants(data) {
 
 function renderScore(data) {
   let svg = vrvToolkit.renderData(data, {
-    pageWidth: 6000,
+    pageWidth: 20000,
     svgViewBox: 1,
-    scale: 120,
     footer: 'none',
     adjustPageHeight: 1,
     breaks: 'encoded',
@@ -181,6 +197,10 @@ function renderScore(data) {
       });
     }
   }
+
+  let viewbox = $('#mei_canvas>svg').attr('viewBox').split(' ');
+  viewbox[3] = parseInt(viewbox[3],10)*2;
+  $('#mei_canvas>svg').attr('viewBox', viewbox.join(' '));
 }
 
 $.when($.ajax('grieg_1903.svl'), $.ajax('grieg_butterfly.mei'))
@@ -188,4 +208,23 @@ $.when($.ajax('grieg_1903.svl'), $.ajax('grieg_butterfly.mei'))
    loadRecording();
    renderScore(score[0]);
    renderTimeInstants(instants[0]);
+});
+
+$(document).ready(function() {
+    $('#play').on('click', playRecording);
+
+    $('#zoom-in').on('click', function() {
+      console.log('clicked');
+      $('.canvas').each(function() {
+        let width = $(this).css('width');
+        $(this).css('width', parseInt(width,10)*1.2);
+      });
+    });
+
+    $('#zoom-out').on('click', function() {
+      $('.canvas').each(function() {
+        let width = $(this).css('width');
+        $(this).css('width', parseInt(width,10)*0.8);
+      });
+    });
 });
