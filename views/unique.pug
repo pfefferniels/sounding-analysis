@@ -1,0 +1,49 @@
+doctype html
+head
+  meta( name='viewport', content='width=device-width, initial-scale=1' )
+  
+  title Basse Fondamentale in Couperin's l'Unique
+  
+  include includes.pug 
+  
+  link(rel='stylesheet' href='css/general.css')
+  script(type='text/javascript' src='js/globals.js')
+  script(type='text/javascript' src='js/unique.js')
+  
+  style.
+    label {
+      margin-left: 1rem;
+    }
+    
+    #play {
+      width: 20vw;
+    }
+  
+body
+  .content
+    .small-text This is an experiment in using Rameau's basse fondamentale as the agent of tempo modifications.
+
+    #mei_canvas.canvas
+  
+  #play
+    i.play.fas.fa-play#start
+    i.stop.fas.fa-stop#stop
+    br
+    
+    input(type='checkbox' autocomplete='off')#rh
+    label(for='#rh') original
+    br
+
+    input(type='checkbox' autocomplete='off')#bc
+    label(for='#bc') basse continue
+    br
+    
+    input(type='checkbox' autocomplete='off')#bf
+    label(for='#bf') basse fondamentale 
+    br
+
+    input(type='checkbox' autocomplete='off')#bfRealization
+    label(for='#bfRealization') realization of basse fondamentale 
+    br
+
+  include foot.pug

@@ -1,0 +1,63 @@
+.content {
+  margin-left: 1rem;
+}
+
+.small-text {
+  margin-top: 2rem;
+  margin-left: 5rem;
+  margin-right: 5rem;
+  margin-bottom: 1rem;
+  font-size: 0.8rem;
+}
+
+#play {
+  position: absolute;
+  right: 0;
+  top: 0;
+  margin-right: 1rem;
+  margin-top: 1rem;
+  cursor: pointer;
+}
+
+.canvas {
+  margin-left: auto;
+  margin-right: auto;
+  width: 50vw;
+}
+
+.stop {
+  display: none;
+}
+
+.bar {
+  cursor: pointer;
+}
+
+.crotchet {
+  fill-opacity: 0.1;
+  stroke: #000;
+  stroke-width: 300;
+}
+
+.semiquaver {
+  fill: gray;
+  stroke: #000;
+  stroke-width: 100;
+}
+
+.barline {
+  stroke-width: 1000;
+  stroke: black;
+  stroke-dasharray: 3000;
+}
+
+.measurebox {
+  fill: gray;
+  opacity: 0.1;
+  stroke-width: 1000;
+  stroke: black;
+}
+
+.grpSym {
+  display: none;
+}

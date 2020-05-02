@@ -1,0 +1,35 @@
+doctype html
+head
+  meta( name='viewport', content='width=device-width, initial-scale=1' )
+  
+  title Tempo Inflections in Grieg's 1903 Recording
+  
+  include includes.pug
+
+  link(rel='stylesheet' href='css/general.css')
+  script(type='text/javascript' src='js/globals.js')
+  script(type='text/javascript' src='js/metronome.js')
+  script(type='text/javascript' src='js/inflections.js')
+  script(type='text/javascript' src='js/sommerfugl.js')
+  
+body
+  .content
+    .small-text This is a "Skyline" representation (as suggested by Gottschewski) of Griegs 1903 recording of 'Butterfly'.
+        |  Click on any bar to hear the corresponding extract from the recording. Hovering on any bar will highlight 
+        | the corresponding bit in the score. On the left side, a metronome can 
+        | be started, that follows precisely Grieg's tempo inflections. 
+      
+    #svl_canvas.canvas
+    .small-text The score of the first section, where width and height of every measure are proportional to the 
+        | real duration in the 1903 recording.
+    #mei_canvas.canvas
+  
+  #play
+    i.play.fas.fa-lg.fa-play
+    i.stop.fas.fa-lg.fa-stop
+  
+  .fixed-left.fixed-top.ml-2.mt-2.w-25
+    i.fas.fa-lg.fa-search-minus#zoom-out
+    i.fas.fa-lg.fa-search-plus#zoom-in
+  
+  include foot.pug

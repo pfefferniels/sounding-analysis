@@ -36,7 +36,7 @@ function playRecording() {
 }
 
 // load the recording ($.ajax is not usable with 'arraybuffer' as response type)
-function loadRecording() {
+function loadRecording(path) {
 	let xhr = new XMLHttpRequest();
 
 	return new Promise(function (resolve, reject) {
@@ -50,7 +50,7 @@ function loadRecording() {
       }
     };
 
-    xhr.open('GET', 'grieg_1903.ogg', true);
+    xhr.open('GET', path, true);
     xhr.responseType = 'arraybuffer';
 		xhr.send();
 	});
@@ -202,29 +202,3 @@ function renderScore(data) {
   viewbox[3] = parseInt(viewbox[3],10)*2;
   $('#mei_canvas>svg').attr('viewBox', viewbox.join(' '));
 }
-
-$.when($.ajax('grieg_1903.svl'), $.ajax('grieg_butterfly.mei'))
- .done(function(instants, score) {
-   loadRecording();
-   renderScore(score[0]);
-   renderTimeInstants(instants[0]);
-});
-
-$(document).ready(function() {
-    $('#play').on('click', playRecording);
-
-    $('#zoom-in').on('click', function() {
-      console.log('clicked');
-      $('.canvas').each(function() {
-        let width = $(this).css('width');
-        $(this).css('width', parseInt(width,10)*1.2);
-      });
-    });
-
-    $('#zoom-out').on('click', function() {
-      $('.canvas').each(function() {
-        let width = $(this).css('width');
-        $(this).css('width', parseInt(width,10)*0.8);
-      });
-    });
-});
