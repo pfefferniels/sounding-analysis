@@ -47,7 +47,8 @@ function renderScoreWithBF(mei) {
   let svg = vrvToolkit.renderData(mei, {
     svgViewBox: 1,
     footer: 'none',
-    adjustPageHeight: 1
+    adjustPageHeight: 1,
+    pageHeight: 20000
   });
 
   $("#mei_canvas").html(svg);
@@ -90,12 +91,12 @@ $(document).ready(function() {
      $('.harm').attr('opacity', '0.2');
 
      $('#bf').change(function() {
-       toggleStaff(3, $(this).is(':checked'));
+       toggleStaff(5, $(this).is(':checked'));
        gainNodes['bf'].gain.value = $(this).is(':checked') ? 1.0 : 0.0;
      });
 
      $('#bc').change(function() {
-       toggleStaff(2, $(this).is(':checked'));
+       toggleStaff(4, $(this).is(':checked'));
        gainNodes['bc'].gain.value = $(this).is(':checked') ? 1.0 : 0.0;
      });
 
@@ -106,6 +107,7 @@ $(document).ready(function() {
 
      $('#rh').change(function() {
        toggleStaff(1, $(this).is(':checked'));
+       toggleStaff(2, $(this).is(':checked'));
        gainNodes['rh'].gain.value = $(this).is(':checked') ? 1.0 : 0.0;
      });
    });
