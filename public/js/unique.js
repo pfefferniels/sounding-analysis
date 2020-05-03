@@ -5,7 +5,7 @@ var recordingIsPlaying = {};
 var recordingNodes = {};
 var gainNodes = {}
 
-function playRecording(name) {
+async function playOrStopRecording(name) {
   if (recordingNodes[name] == null || !recordingNodes[name]) {
     recordingNodes[name] = audioContext.createBufferSource();
     recordingNodes[name].connect(gainNodes[name]);
@@ -67,13 +67,33 @@ function toggleStaff(n, onOff) {
 }
 
 $(document).ready(function() {
+  $('#bf').on('change', function() {
+    toggleStaff(5, $(this).is(':checked'));
+    gainNodes['bf'].gain.value = $(this).is(':checked') ? 1.0 : 0.0;
+  });
+
+  $('#bc').change(function() {
+    toggleStaff(4, $(this).is(':checked'));
+    gainNodes['bc'].gain.value = $(this).is(':checked') ? 1.0 : 0.0;
+  });
+
+  $('#bfRealization').change(function() {
+    toggleStaff(3, $(this).is(':checked'));
+    gainNodes['accordes'].gain.value = $(this).is(':checked') ? 1.0 : 0.0;
+  });
+
+  $('#rh').change(function() {
+    toggleStaff(1, $(this).is(':checked'));
+    toggleStaff(2, $(this).is(':checked'));
+    gainNodes['original'].gain.value = $(this).is(':checked') ? 1.0 : 0.0;
+  });
+
   audioContext = new AudioContext();
 
   for (name of ['bf', 'bc', 'accordes', 'original']) {
     gainNodes[name] = audioContext.createGain();
     gainNodes[name].gain.value = 0.0;
     gainNodes[name].connect(audioContext.destination);
-
   }
 
   loadRecording('bf', 'data/unique/basse-fondamentale.ogg');
@@ -88,36 +108,34 @@ $(document).ready(function() {
      $('.measure').each(function() {
        $(this).find('.staff').attr('opacity', '0.2');
      });
-     $('.harm').attr('opacity', '0.2');
+     $('.harm').attr('opacity', '0.5');
 
-     $('#bf').change(function() {
-       toggleStaff(5, $(this).is(':checked'));
-       gainNodes['bf'].gain.value = $(this).is(':checked') ? 1.0 : 0.0;
-     });
-
-     $('#bc').change(function() {
-       toggleStaff(4, $(this).is(':checked'));
-       gainNodes['bc'].gain.value = $(this).is(':checked') ? 1.0 : 0.0;
-     });
-
-     $('#bfRealization').change(function() {
-       toggleStaff(3, $(this).is(':checked'));
-       gainNodes['accordes'].gain.value = $(this).is(':checked') ? 1.0 : 0.0;
-     });
-
-     $('#rh').change(function() {
-       toggleStaff(1, $(this).is(':checked'));
-       toggleStaff(2, $(this).is(':checked'));
-       gainNodes['original'].gain.value = $(this).is(':checked') ? 1.0 : 0.0;
-     });
+     for (name of ['#bf', '#bc', '#bfRealization', '#rh']) {
+       $(name).prop('checked', true);
+       $(name).trigger('change');
+     }
    });
-
 
    $('#start').on('click', function() {
-     playRecording('bf');
-     playRecording('bc');
-     playRecording('accordes');
-     playRecording('original');
+     if (Object.keys(recordingBuffers).length != 4) {
+       $('<p>Sound still loading, try again in a few seconds</p>')
+          .appendTo('#play')
+          .delay(1500)
+          .fadeOut(300);
+        return;
+     }
+     $('#play i').toggle();
+
+     playOrStopRecording('bf');
+     playOrStopRecording('bc');
+     playOrStopRecording('accordes');
+     playOrStopRecording('original');
    });
 
+   $('#stop').on('click', function() {
+     $('#play i').toggle();
+     for (name of ['bf', 'bc', 'accordes', 'original']) {
+       playOrStopRecording();
+     }
+   });
 });
