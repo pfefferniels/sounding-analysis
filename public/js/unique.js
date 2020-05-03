@@ -69,17 +69,17 @@ function toggleStaff(n, onOff) {
 $(document).ready(function() {
   audioContext = new AudioContext();
 
-  for (name of ['bf', 'bc', 'bf-realization', 'rh']) {
+  for (name of ['bf', 'bc', 'accordes', 'original']) {
     gainNodes[name] = audioContext.createGain();
     gainNodes[name].gain.value = 0.0;
     gainNodes[name].connect(audioContext.destination);
 
   }
 
-  loadRecording('bf', 'data/unique/bf.ogg');
-  loadRecording('bc', 'data/unique/bc.ogg');
-  loadRecording('bf-realization', 'data/unique/bf-realization.ogg');
-  loadRecording('rh', 'data/unique/rh.ogg');
+  loadRecording('bf', 'data/unique/basse-fondamentale.ogg');
+  loadRecording('bc', 'data/unique/basse-continue.ogg');
+  loadRecording('accordes', 'data/unique/accordes.ogg');
+  loadRecording('original', 'data/unique/original.ogg');
 
   $.when($.ajax('data/unique/score.mei'))
    .done(function(score) {
@@ -102,13 +102,13 @@ $(document).ready(function() {
 
      $('#bfRealization').change(function() {
        toggleStaff(3, $(this).is(':checked'));
-       gainNodes['bf-realization'].gain.value = $(this).is(':checked') ? 1.0 : 0.0;
+       gainNodes['accordes'].gain.value = $(this).is(':checked') ? 1.0 : 0.0;
      });
 
      $('#rh').change(function() {
        toggleStaff(1, $(this).is(':checked'));
        toggleStaff(2, $(this).is(':checked'));
-       gainNodes['rh'].gain.value = $(this).is(':checked') ? 1.0 : 0.0;
+       gainNodes['original'].gain.value = $(this).is(':checked') ? 1.0 : 0.0;
      });
    });
 
@@ -116,8 +116,8 @@ $(document).ready(function() {
    $('#start').on('click', function() {
      playRecording('bf');
      playRecording('bc');
-     playRecording('rh');
-     playRecording('bf-realization');
+     playRecording('accordes');
+     playRecording('original');
    });
 
 });
