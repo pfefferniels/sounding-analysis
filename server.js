@@ -19,6 +19,10 @@ app.get('/unique', function(req, res) {
   res.render('unique');
 });
 
+app.get('/schenker', function(req, res) {
+  res.render('schenker')
+})
+
 //app.get('/raphaele', function(req, res) {
 //  res.render('raphaele');
 //});
